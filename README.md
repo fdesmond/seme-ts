@@ -32,7 +32,9 @@ A baseline routine is provided in `script.py`.
 Architecture of `tsmall` module:
 ```
 tsmall/
-    augmentation.py
+    augmentation.py   # empty
+    expand.py
+    models.py
     subsample.py
 ```
 
@@ -40,6 +42,7 @@ tsmall/
 You need to pre-install numpy, matplotlib, scipy and scikit-learn for running the code.
 
 ### last updates
+ - added `script.py`, `models.py` and `expand.py`
  - added `augmentation.py` (empty) in `tsmall`
  - added `subsample.py` by Max in `tsmall`
  - created `tsmall` directory with `__init__.py` file to initialize the module
