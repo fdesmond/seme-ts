@@ -48,7 +48,7 @@ You need to pre-install numpy, matplotlib, scipy and scikit-learn for running th
 
 ### overall progress
  - [x] check mathematical bibliography on Time Series Data Augmentation
- - [ ] check python libraries as `tsaug`
+ - [x] check python libraries as `tsaug`
  - [ ] add docstrings and useful comments in all python scripts
  - [x] discuss the train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`
  - [ ] implement all the proposed strategies in `subsample.py`
