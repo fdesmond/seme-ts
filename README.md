@@ -29,12 +29,15 @@ To work with our functions, just download the `tsmall` directory and launch pyth
 
 A baseline routine is provided in `script.py`.
 
-Architecture:
+Architecture of `tsmall` module:
 ```
-tsmall\
+tsmall/
     augmentation.py
     subsample.py
 ```
+
+#### dependencies
+You need to pre-install numpy, matplotlib, scipy and scikit-learn for running the code.
 
 ### last updates
  - added `augmentation.py` (empty) in `tsmall`
@@ -60,7 +63,7 @@ tsmall\
   - is it possible to do any consistency analysis or prove the procedure improve robustness?
   - is it always possible to apply the previous procedures or does it strongly depend on *normality assumptions* on the data?
 
-## diving into the problem
+## Documentation
 
 ### bibliography
 Research papers:
@@ -69,10 +72,14 @@ Research papers:
  3. [Time Series Data Augmentation for Neural Networks by Time Warping with a Discriminative Teacher](https://arxiv.org/abs/2004.08780)
  4. [An Empirical Survey of Data Augmentation for Time Series Classification with Neural Networks](https://arxiv.org/abs/2007.15951)
  5. [Data Augmentation for Time Series Classification using Convolutional Neural Networks](https://halshs.archives-ouvertes.fr/halshs-01357973)
+ 6. [Data Augmentation of Wearable Sensor Data for Parkinson's Disease Monitoring using Convolutional Neural Networks](https://arxiv.org/abs/1706.00527)
+ 7. [Improving the Accuracy of Global Forecasting Models using Time Series Data Augmentation](https://arxiv.org/abs/2008.02663v1)
+ 8. [Generating Synthetic Time Series to Augment Sparse Datasets](https://ieeexplore.ieee.org/document/8215569)
 
 ...related to the GitHub repositories:
- - to 2. https://github.com/hfawaz/aaltd18
- - to 3. and 4. https://github.com/uchidalab/time_series_augmentation
+ - [2] https://github.com/hfawaz/aaltd18
+ - [3,4] https://github.com/uchidalab/time_series_augmentation
+ - [6] https://github.com/terryum/Data-Augmentation-For-Wearable-Sensor-Data
 
  Observe that most of the cited bibliography is focused on classification problems for NN algorithms. In such framework, the time-series is seen as an input and the augmentation technique allows to generate *similar* time-series on which the model can be trained. For these reasons, many of the aforementioned strategies are not suitable for our framework (e.g. Dynamic Time Warping in [3]); however a few ideas (e.g. frequency domain transform, decomposition method in [1]) could be developed and put into practice for standard ML algorithms.
 
@@ -87,6 +94,8 @@ We tackle three possible subsampling techniques in order to obtain `data_B`:
  1. random subsampling: take `n` observations from `train_A` uniformly at random without replacement;
  2. block subsampling: consider `u` a uniform random integer between 1 and `size(train_A)-n`, select `n` consecutive rows starting from row `u`;
  3. window cropping: consider `k` blocks of total size `n`, apply (2) for every block (without oversampling).
+
+ The sampling procedure is validated by comparing old and new histograms.
 
 ### data augmentation
 Data augmentation is the process of generating artificial data in order to reduce the variance of the predictor and thus avoiding overfitting.
