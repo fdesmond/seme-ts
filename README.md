@@ -56,7 +56,6 @@ Research papers:
  3. [Time Series Data Augmentation for Neural Networks by Time Warping with a Discriminative Teacher](https://arxiv.org/abs/2004.08780)
  4. [An Empirical Survey of Data Augmentation for Time Series Classification with Neural Networks](https://arxiv.org/abs/2007.15951)
  5. [Data Augmentation for Time Series Classification using Convolutional Neural Networks](https://halshs.archives-ouvertes.fr/halshs-01357973)
- 6. [Time Series Classification from Scratch with Deep Neural Networks: A Strong Baseline](https://arxiv.org/abs/1611.06455)
 
 ...related to the GitHub repositories:
  - to 2. https://github.com/hfawaz/aaltd18
@@ -72,7 +71,10 @@ Two possibilities: random subsampling (ignoring the time-series order), block su
 Two possibilities: random subsampling (ignoring the time-series order), block subsampling (keeping consecutive observations).
 
 ### data augmentation
+The basic idea of data augmentation is to generate synthetic dataset covering unexplored input space while maintaining correct labels. (from [1](https://arxiv.org/abs/2002.12478))
+
 One idea is to exploit the temporal order in the observations and to infer values by using interpolation techniques.
+
 
 Under stationarity assumptions we can use classical bootstrap techniques.
 
