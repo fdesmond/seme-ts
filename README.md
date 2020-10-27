@@ -5,9 +5,9 @@ We are given a regression problem with a dataframe consisting in `d` features `X
 
 Suppose that `n` is small (**small-data problem**). We try to answer the following questions:
 
-    *Does the time-series nature of the problem gives us more information on the prediction of the variable `Y`?*
+*Does the time-series nature of the problem gives us more information on the prediction of the variable `Y`?*
 
-    *Is it possible to use the datetime attribute to infer new fake observations (+labels!) and augment the dataset size? How is this changing the algorithm performance?*
+*Is it possible to use the datetime attribute to infer new fake observations (+labels!) and augment the dataset size? How is this changing the algorithm performance?*
 
 ### set-up
 For the sake of analysis, we consider a database `data_A` with `N` observations where `N>>n`. It is split in `train_A` and `test_A`, this splitting being performed in different ways. We mainly focus on classical train_test_split (random sampling) and time_series_split (a random block of consecutive observations).
@@ -25,10 +25,13 @@ We focus on these open repositories:
  - [Appliances energy prediction Data Set](https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction)
 
 ## Current version
+To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
 ### last updates
- - added `subsample.py` by Max
- - added `energydata_complete.csv` as dataframe example from Appliances energy prediction Data Set
+ - created `tsmall` directory with `__init__.py` file to initialize the module
+ - added `subsample.py` by Max in `tsmall`
+ - added `models.py` (empty) in `tsmall`
+ - added `energydata_complete.csv` in `\` as dataframe example from Appliances energy prediction Data Set
 
 ### things to do
  - check mathematical bibliography on Time Series Data Augmentation, see e.g. the link provided by Yiye [Time Series Data Augmentation for Deep Learning: A Survey](https://arxiv.org/pdf/2002.12478.pdf), as well as python libraries as `tsaug`
