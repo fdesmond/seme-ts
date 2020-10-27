@@ -49,6 +49,22 @@ To work with our functions, just download the `tsmall` directory and launch pyth
 
 ## diving into the problem
 
+### bibliography
+Research papers:
+ 1. [Time Series Data Augmentation for Deep Learning: A Survey](https://arxiv.org/abs/2002.12478)
+ 2. [Data Augmentation Using Synthetic Data for Time Series Classification with Deep Residual Networks](https://arxiv.org/abs/1808.02455)
+ 3. [Time Series Data Augmentation for Neural Networks by Time Warping with a Discriminative Teacher](https://arxiv.org/abs/2004.08780)
+ 4. [An Empirical Survey of Data Augmentation for Time Series Classification with Neural Networks](https://arxiv.org/abs/2007.15951)
+ 5. [Data Augmentation for Time Series Classification using Convolutional Neural Networks](https://halshs.archives-ouvertes.fr/halshs-01357973)
+ 6. [Time Series Classification from Scratch with Deep Neural Networks: A Strong Baseline](https://arxiv.org/abs/1611.06455)
+
+...related to the GitHub repositories:
+ - to 2. https://github.com/hfawaz/aaltd18
+ - to 3. and 4. https://github.com/uchidalab/time_series_augmentation
+
+ Python libraries:
+ - `tsaug` [documentation](https://tsaug.readthedocs.io/en/stable/index.html)
+
 ### train test split on `data_A`
 Two possibilities: random subsampling (ignoring the time-series order), block subsampling (keeping consecutive observations).
 
