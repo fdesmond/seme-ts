@@ -34,11 +34,11 @@ To work with our functions, just download the `tsmall` directory and launch pyth
  - added `energydata_complete.csv` in `\` as dataframe example from Appliances energy prediction Data Set
 
 ### things to do
- - check mathematical bibliography on Time Series Data Augmentation, see e.g. the link provided by Yiye [Time Series Data Augmentation for Deep Learning: A Survey](https://arxiv.org/pdf/2002.12478.pdf), as well as python libraries as `tsaug`
- - add docstrings and useful comments in all python scripts, e.g. in `subsample.py` provided by Max
- - discuss the train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`
- - discuss interpolation techniques to obtain `data_C` and thus the assumptions we want to take on the underlying ts (continuity? quasi-stationarity?)
- - provide a few baseline models for the two datasets (RF, XGB, LR... other?) in `models.py`
+ - [ ] check mathematical bibliography on Time Series Data Augmentation, see e.g. the link provided by Yiye [Time Series Data Augmentation for Deep Learning: A Survey](https://arxiv.org/pdf/2002.12478.pdf), as well as python libraries as `tsaug`
+ - [ ] add docstrings and useful comments in all python scripts, e.g. in `subsample.py` provided by Max
+ - [ ] discuss the train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`
+ - [ ] discuss interpolation techniques to obtain `data_C` and thus the assumptions we want to take on the underlying ts (continuity? quasi-stationarity?)
+ - [ ] provide a few baseline models for the two datasets (RF, XGB, LR... other?) in `models.py`
 
 
 ### far in the future
