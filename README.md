@@ -98,7 +98,7 @@ We tackle three possible subsampling techniques in order to obtain `data_B`:
  2. block subsampling: consider `u` a uniform random integer between 1 and `size(train_A)-n`, select `n` consecutive rows starting from row `u`;
  3. window cropping: consider `k` blocks of total size `n`, apply (2) for every block (without oversampling).
 
- The sampling procedure is validated by comparing old and new histograms.
+ The sampling procedure is validated by comparing old and new histograms: we want to be sure that the sampling procedure has not altered the statistical properties of the original dataframe.
 
 ### data augmentation
 Data augmentation is the process of generating artificial data in order to reduce the variance of the predictor and thus avoiding overfitting.
