@@ -1,3 +1,3 @@
 # init file for tsmall
-from .subsample import *
-from .models import *
+from .preprocessing import *
+from .augment import *

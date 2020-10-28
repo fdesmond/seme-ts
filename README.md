@@ -27,42 +27,40 @@ We focus on these open repositories available at UCI:
 ## Current module version
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
-A baseline routine is provided in `script.py`.
+A baseline routine is provided in the notebook `energy.ipynb`.
 
 Architecture of `tsmall` module:
 ```
 tsmall/
-    augmentation.py   # empty
-    expand.py
-    models.py
-    subsample.py
+    augmentation.py   # containing tsaug and dfaug
+    preprocessing.py  # containing block_sampling and min_max_normalization
 ```
 
 #### dependencies
-You need to pre-install numpy, matplotlib, scipy and scikit-learn for running the code.
+You need to pre-install numpy, matplotlib and scikit-learn for running the code. (maybe libraries for wavelets in case)
 
 ### last updates
- - added `script.py`, `models.py` and `expand.py`
- - added `augmentation.py` (empty) in `tsmall`
- - added `subsample.py` by Max in `tsmall`
- - created `tsmall` directory with `__init__.py` file to initialize the module
- - added `energydata_complete.csv` in `\` as dataframe example from Appliances energy prediction Data Set
+ - added a very first version of the notebook `energy.ipynb`
+ - added `augmentation.py` with `tsaug` and `dfaug`
+ - added `preprocessing.py` with `block_sampling()` and `min_max_normalization`
+ - old scripts went to `old` folder
 
 
 ### overall progress
  - [x] check mathematical bibliography on Time Series Data Augmentation
  - [x] check python libraries as `tsaug`
- - [ ] add docstrings and useful comments in all python scripts
+ - [x] add docstrings and useful comments in all python scripts
  - [x] discuss the train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`
- - [ ] implement all the proposed strategies in `subsample.py`
- - [ ] create the basic `script.py` with baseline routine
- - [ ] discuss interpolation techniques to obtain `data_C` and thus the assumptions we want to take on the underlying ts (continuity? quasi-stationarity?)
- - [ ] implement the different augmentation techniques in `augmentation.py`
+ - [x] implement the sampling strategy in `preprocessing.py`
+ - [ ] create the basic notebook `energy.py` with baseline routine
+ - [x] discuss interpolation techniques to obtain `data_C` and thus the assumptions we want to take on the underlying ts (continuity? quasi-stationarity?)
+ - [x] implement the augmentation techniques through Fourier in `augmentation.py`
+ - [ ] implement wavelet technique in `augmentation.py`
+ - [ ] test the augmented dataframe
 
 
 #### far in the future
  We also would like to include:
-  - threshold analysis with respect to `n`: how many samples do I really need to achieve a good result?
   - is it possible to do any consistency analysis or prove the procedure improve robustness?
   - is it always possible to apply the previous procedures or does it strongly depend on *normality assumptions* on the data?
 
@@ -99,7 +97,7 @@ The train test split is obtained via a similar procedure to obtaining `data_B`, 
 We tackle three possible subsampling techniques in order to obtain `data_B`:
  1. random subsampling: take `n` observations from `train_A` uniformly at random without replacement;
  2. block subsampling: consider `u` a uniform random integer between 1 and `size(train_A)-n`, select `n` consecutive rows starting from row `u`;
- 3. window cropping: consider `k` blocks of total size `n`, apply (2) for every block (without oversampling).
+ 3. window cropping (see `block_sampling()`): consider `k` blocks of total size `n`, apply (2) for every block (without oversampling).
 
  The sampling procedure is validated by comparing old and new histograms: we want to be sure that the sampling procedure has not altered the statistical properties of the original dataframe.
 
@@ -108,7 +106,7 @@ Data augmentation is the process of generating artificial data in order to reduc
 
 Within our framework, we aim at exploiting the temporal order in the observations and to infer values by using interpolation techniques:
  - Under stationarity assumptions we can use classical bootstrap techniques.
- - Under continuity assumptions of the signals, we can use interpolation techniques.
+ - Under continuity assumptions of the signals, we can use interpolation techniques as in [10], although with not great performances.
 
 For very general 1D-signals, we can try the following procedure:
  1. select a random time-window of the signal;
@@ -116,6 +114,8 @@ For very general 1D-signals, we can try the following procedure:
  3. apply IDFT to reconstruct a portion of the original signal;
  4. assign Y[time-window].
 
+This procedure is tackled by `tsaug()` for a single 1D-signal and by `dfaug()` for the whole dataframe. A normalization procedure is usually performed to apply the same distortion to every signal.
+
 Some key points:
- - should one renormalize the signals to a same scale before applying DFT?
  - is some frequency more important than others? Is there an automatic way to decide it?
+ - understanding fine tuning in Fourier/Wavelet decomposition
