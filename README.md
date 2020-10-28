@@ -78,16 +78,19 @@ Research papers:
  6. [Data Augmentation of Wearable Sensor Data for Parkinson's Disease Monitoring using Convolutional Neural Networks](https://arxiv.org/abs/1706.00527)
  7. [Improving the Accuracy of Global Forecasting Models using Time Series Data Augmentation](https://arxiv.org/abs/2008.02663v1)
  8. [Generating Synthetic Time Series to Augment Sparse Datasets](https://ieeexplore.ieee.org/document/8215569)
+ 9. [Data Augmentation for EEG-Based Emotion Recognition with Deep Convolutional Neural Networks](https://link.springer.com/chapter/10.1007/978-3-319-73600-6_8)
+ 10. [Time-Series Data Augmentation based on Interpolation](https://www.sciencedirect.com/science/article/pii/S1877050920316914)
 
 ...related to the GitHub repositories:
  - [2] https://github.com/hfawaz/aaltd18
- - [3,4] https://github.com/uchidalab/time_series_augmentation
+ - [3, 4] https://github.com/uchidalab/time_series_augmentation
  - [6] https://github.com/terryum/Data-Augmentation-For-Wearable-Sensor-Data
 
  Observe that most of the cited bibliography is focused on classification problems for NN algorithms. In such framework, the time-series is seen as an input and the augmentation technique allows to generate *similar* time-series on which the model can be trained. For these reasons, many of the aforementioned strategies are not suitable for our framework (e.g. Dynamic Time Warping in [3]); however a few ideas (e.g. frequency domain transform, decomposition method in [1]) could be developed and put into practice for standard ML algorithms.
 
  Python libraries:
- - `tsaug` [documentation](https://tsaug.readthedocs.io/en/stable/index.html)
+ - `tsaug` is useful to modify time-series in the time space, but not necessarily for our scope | see the [documentation](https://tsaug.readthedocs.io/en/stable/index.html)
+ - `sigment` data augmentation for audio signals | see the [documentation](https://notes.eonu.net/docs/sigment/0.1.1/index.html)
 
 ### train test split
 The train test split is obtained via a similar procedure to obtaining `data_B`, we thus refer to the following subsection.
@@ -106,3 +109,13 @@ Data augmentation is the process of generating artificial data in order to reduc
 Within our framework, we aim at exploiting the temporal order in the observations and to infer values by using interpolation techniques:
  - Under stationarity assumptions we can use classical bootstrap techniques.
  - Under continuity assumptions of the signals, we can use interpolation techniques.
+
+For very general 1D-signals, we can try the following procedure:
+ 1. select a random time-window of the signal;
+ 2. apply DFT and perturb certain frequencies;
+ 3. apply IDFT to reconstruct a portion of the original signal;
+ 4. assign Y[time-window].
+
+Some key points:
+ - should one renormalize the signals to a same scale before applying DFT?
+ - is some frequency more important than others? Is there an automatic way to decide it?
