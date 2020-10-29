@@ -1,5 +1,5 @@
 # sampling and normalizing
-
+import numpy as np
 
 def block_sampling(N, k, l):
     '''select k distinct intervals of size l from 0 to N
