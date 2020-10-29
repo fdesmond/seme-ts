@@ -92,7 +92,7 @@ Research papers:
  Observe that most of the cited bibliography is focused on classification problems for NN algorithms. In such framework, the time-series is seen as an input and the augmentation technique allows to generate *similar* time-series on which the model can be trained. For these reasons, many of the aforementioned strategies are not suitable for our framework (e.g. Dynamic Time Warping in [3]); however a few ideas (e.g. frequency domain transform, decomposition method in [1]) could be developed and put into practice for standard ML algorithms.
 
  Python libraries:
- - `signal_distortion` is useful to modify time-series in the time space, but not necessarily for our scope | see the [documentation](https://signal_distortion.readthedocs.io/en/stable/index.html)
+ - `tsaug` is useful to modify time-series in the time space, but not necessarily for our scope | see the [documentation](https://signal_distortion.readthedocs.io/en/stable/index.html)
  - `sigment` data augmentation for audio signals | see the [documentation](https://notes.eonu.net/docs/sigment/0.1.1/index.html)
 
 ### train test split
