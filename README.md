@@ -27,36 +27,41 @@ We focus on these open repositories available at UCI:
 ## Current module version
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
-A baseline routine is provided in the notebook `energy.ipynb`.
+A baseline routine is provided in the notebook `oracle.ipynb`. The ipynb `signal_distortion.ipynb` contains a few examples using the module `tsmall` and, in particular, the function `signal_distortion()`.
 
 Architecture of `tsmall` module:
 ```
 tsmall/
-    augmentation.py   # containing tsaug and dfaug
+    augment.py   # containing signal_distortion and dfaug
     preprocessing.py  # containing block_sampling and min_max_normalization
 ```
 
 #### dependencies
-You need to pre-install numpy, matplotlib and scikit-learn for running the code. (maybe libraries for wavelets in case)
+You need to pre-install numpy, matplotlib, scikit-learn and pywt (wavelet) for running the code.
 
 ### last updates
- - added a very first version of the notebook `energy.ipynb`
- - added `augmentation.py` with `tsaug` and `dfaug`
- - added `preprocessing.py` with `block_sampling()` and `min_max_normalization`
+ - implement different methods for transformation (fourier and wavelet) in `augment.py`
+ - added support to modify the `y` in `dfaug(y_dist=True)`
+ - added a very first version of the notebook `signal_distortion.ipynb`
+ - added `oracle.ipynb` for baseline tests
+ - added `preprocessing.py` with `block_sampling()` and `min_max_normalization()`
  - old scripts went to `old` folder
 
 
 ### overall progress
  - [x] check mathematical bibliography on Time Series Data Augmentation
- - [x] check python libraries as `tsaug`
- - [x] add docstrings and useful comments in all python scripts
+ - [x] check python libraries as `signal_distortion`
  - [x] discuss the train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`
  - [x] implement the sampling strategy in `preprocessing.py`
- - [ ] create the basic notebook `energy.py` with baseline routine
  - [x] discuss interpolation techniques to obtain `data_C` and thus the assumptions we want to take on the underlying ts (continuity? quasi-stationarity?)
- - [x] implement the augmentation techniques through Fourier in `augmentation.py`
- - [ ] implement wavelet technique in `augmentation.py`
+ - [x] implement the augmentation techniques through Fourier in `augment.py`
+ - [x] create the basic notebook `oracle.py` with baseline routine
+ - [x] implement wavelet technique in `augment.py`
  - [ ] test the augmented dataframe
+ - [ ] use different metric_score to asset the overall performance
+ - [ ] try xgboost
+ - [ ] add docstrings and useful comments in all python scripts
+
 
 
 #### far in the future
@@ -87,7 +92,7 @@ Research papers:
  Observe that most of the cited bibliography is focused on classification problems for NN algorithms. In such framework, the time-series is seen as an input and the augmentation technique allows to generate *similar* time-series on which the model can be trained. For these reasons, many of the aforementioned strategies are not suitable for our framework (e.g. Dynamic Time Warping in [3]); however a few ideas (e.g. frequency domain transform, decomposition method in [1]) could be developed and put into practice for standard ML algorithms.
 
  Python libraries:
- - `tsaug` is useful to modify time-series in the time space, but not necessarily for our scope | see the [documentation](https://tsaug.readthedocs.io/en/stable/index.html)
+ - `signal_distortion` is useful to modify time-series in the time space, but not necessarily for our scope | see the [documentation](https://signal_distortion.readthedocs.io/en/stable/index.html)
  - `sigment` data augmentation for audio signals | see the [documentation](https://notes.eonu.net/docs/sigment/0.1.1/index.html)
 
 ### train test split
@@ -114,7 +119,7 @@ For very general 1D-signals, we can try the following procedure:
  3. apply IDFT to reconstruct a portion of the original signal;
  4. assign Y[time-window].
 
-This procedure is tackled by `tsaug()` for a single 1D-signal and by `dfaug()` for the whole dataframe. A normalization procedure is usually performed to apply the same distortion to every signal.
+This procedure is tackled by `signal_distortion()` for a single 1D-signal and by `dfaug()` for the whole dataframe. A normalization procedure is usually performed to apply the same distortion to every signal.
 
 Some key points:
  - is some frequency more important than others? Is there an automatic way to decide it?

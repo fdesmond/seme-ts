@@ -4,64 +4,73 @@ from numpy.fft import rfft, irfft       # fourier transform and inverse function
 import pandas as pd
 import pywt
 
-# 1D signal distortion through Fourier Transform + random perturbation on the phases
-def tsaug(timeserie, sigma=0.2, method='fourier1'):
+# 1D signal distortion through Fourier or Wavelet Transform
+def signal_distortion(signal, sigma=0.2, method='fourier2'):
     '''
     Parameters
     ----------
-    timeserie : 1D-ndarray
+    signal : 1D-ndarray
     sigma : positive scalar accounting for the scale of the perturbation (0 iff no perturbation)
     method : str, either *fourier1*, *fourier2* or *wavelet* accounting the type of transformation
 
     Returns
     -------
-    timeserie2 : 1D-ndarray of the same size of input
+    signal_out : 1D-ndarray of the same size of input
+
+    DESCRIPTION TO ADD
     '''
 
     # since we apply FFT to real signals, we force the length to be an even number
-    dim = len(timeserie)
-    l = len(timeserie)
+    dim = len(signal)
+    l = len(signal)
     if dim%2:
-        ts_last = timeserie[-1]
-        timeserie = timeserie[:-1]
-        l = len(timeserie)
+        signal_last = signal[-1]
+        signal = signal[:-1]
+        l = len(signal)
 
     # fourier transform on phase
     if method=='fourier1':
-        ft = rfft(timeserie)
+        ft = rfft(signal)
         perturbation = np.random.normal(0, sigma, size=l//2+1)
         #ftb = ft + perturbation   #noise applied on fourier transform
-        #timeserie2 = irfft(ftb)   #inverse fourier transform
+        #signal2 = irfft(ftb)   #inverse fourier transform
         ft_p = ft.real*np.cos(perturbation) - ft.imag*np.sin(perturbation) + 1j*(ft.imag*np.cos(perturbation) +ft.real*np.sin(perturbation))
-        timeserie_p = irfft(ft_p)
+        signal_out = irfft(ft_p)
     # fourier transform on amplitudes, the scale is divided by 10 with respect to the original one
     elif method=='fourier2':
-        ft = rfft(timeserie)
+        ft = rfft(signal)
         scale_perturbation = np.append(np.ones(l//2+1 - l//4), \
                                     np.exp(np.random.normal(scale = sigma, size = l//4)))
         ft_p = ft*scale_perturbation
-        timeserie_p = np.fft.irfft(ft_p)
+        signal_out = np.fft.irfft(ft_p)
     elif method=='wavelet':
-        cA, cD = pywt.dwt(timeserie, 'db2')     # decomposition
+        cA, cD = pywt.dwt(signal, 'db2')     # decomposition
         perturbed_cA = cA + np.random.normal(0, sigma, size=len(cA)) # quasi-local perturbations
         perturbed_cD = cD + np.random.normal(0, 0, size=len(cD)) # small local perturbations
-        timeserie_p = pywt.idwt(perturbed_cA, perturbed_cD, 'db2')
+        signal_out = pywt.idwt(perturbed_cA, perturbed_cD, 'db2')
 
     # restore the original size of the vector
     if dim%2:
-        timeserie_p = np.append(timeserie_p, ts_last)
+        signal_out = np.append(signal_out, signal_last)
 
-    return timeserie_p
+    return signal_out
 
 
 # dataframe augmentation
-def dfaug(X, sigma=0.2, method='fourier1'):
-    '''The input is a pandas dataframe consisting in 1D-signals (the columns). The last column (representing the labels) is not distorted.
-    input:
-        - X: 2d-ndarray of size (n, d) where the first d-1 columns represent d time series that we want to augment
-        - frac: percentage of data with resect to n that we want to generate (frac=1 corresponds to n)
+def dfaug(X, sigma=0.2, method='fourier2', y_dist=False):
+    '''
+    Parameters
+    ----------
+    X : 2d-ndarray of size (n, d), the first d-1 columns represent the 1d-signal to be disturbed (see y_dist for last column)
+    sigma : positive float64, it tunes the distortion (0 iff no distortion)
+    method : str, *fourier1* for phase, *fourier2* for amplitude, *wavelet* for wavelet
+    y_dist : boolean value, True for changing the last column in X
 
-    return: a 2d-ndarray consisting of X concatenated with a distorted version of it
+    Returns
+    -------
+    2d-ndarray consisting of X concatenated with a distorted version of it, shape (2*n, d)
+
+    DESCRIPTION TO ADD
     '''
     n, d = X.shape
     col = X.columns     # save column names for later
@@ -76,7 +85,8 @@ def dfaug(X, sigma=0.2, method='fourier1'):
     # applying distortion to each time-block and for some random features
     for i in [t_int*t for t in range(5)]:
         for j in np.random.choice(range(d-1), int(np.sqrt(d)), replace=False):     # select sqrt(d) different features at random
-            X_dist[i:i+t_int, j] = tsaug(X_dist[i:i+t_int, j], sigma=sigma, method=method)
+            X_dist[i:i+t_int, j] = signal_distortion(X_dist[i:i+t_int, j], sigma=sigma, method=method)
+            if y_dist: X_dist[i:i+t_int, -1] = signal_distortion(X_dist[i:i+t_int, -1], sigma=sigma, method=method)
 
     # back to dataframe
     X_dist = pd.DataFrame(X_dist, columns=col)
