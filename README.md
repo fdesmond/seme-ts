@@ -27,7 +27,7 @@ We focus on these open repositories available at UCI:
 ## Current module version
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
-A baseline routine is provided in the notebook `oracle.ipynb`. The ipynb `signal_distortion.ipynb` contains a few examples using the module `tsmall` and, in particular, the function `signal_distortion()`.
+A baseline routine is provided in the notebook `oracle.ipynb`. The notebook `signal_distortion.ipynb` contains a few examples using the module `tsmall` and, in particular, the function `signal_distortion()`.
 
 Architecture of `tsmall` module:
 ```
@@ -40,6 +40,7 @@ tsmall/
 You need to pre-install numpy, matplotlib, scikit-learn and pywt (wavelet) for running the code.
 
 ### last updates
+ - added `aug_test.ipynb` with `xgboost` and `np.log(y)`: is it more a classification problem? (look at `y` histogram)
  - implement different methods for transformation (fourier and wavelet) in `augment.py`
  - added support to modify the `y` in `dfaug(y_dist=True)`
  - added a very first version of the notebook `signal_distortion.ipynb`
@@ -57,17 +58,19 @@ You need to pre-install numpy, matplotlib, scikit-learn and pywt (wavelet) for r
  - [x] implement the augmentation techniques through Fourier in `augment.py`
  - [x] create the basic notebook `oracle.py` with baseline routine
  - [x] implement wavelet technique in `augment.py`
- - [ ] test the augmented dataframe
- - [ ] use different metric_score to asset the overall performance
- - [ ] try xgboost
+ - [x] test the augmented dataframe
+ - [x] use different metric_score to asset the overall performance
+ - [x] try xgboost
+ - [ ] test PM2.5 dataframe with a more continuous feature
+ - [ ] try energy dataset with classification
  - [ ] add docstrings and useful comments in all python scripts
 
 
 
 #### far in the future
  We also would like to include:
-  - is it possible to do any consistency analysis or prove the procedure improve robustness?
-  - is it always possible to apply the previous procedures or does it strongly depend on *normality assumptions* on the data?
+  - mathematical modelization and precise hypothesis on the model for which the procedure should give good results
+  - does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation? (see proposition by Sonia)
 
 ## Documentation
 
@@ -112,15 +115,15 @@ Data augmentation is the process of generating artificial data in order to reduc
 Within our framework, we aim at exploiting the temporal order in the observations and to infer values by using interpolation techniques:
  - Under stationarity assumptions we can use classical bootstrap techniques.
  - Under continuity assumptions of the signals, we can use interpolation techniques as in [10], although with not great performances.
+ - For very general 1D-signals, we can try the following procedure:
+  1. select a random time-window of the signal;
+  2. apply DFT and perturb certain frequencies;
+  3. apply IDFT to reconstruct a portion of the original signal;
+  4. assign Y[time-window].
 
-For very general 1D-signals, we can try the following procedure:
- 1. select a random time-window of the signal;
- 2. apply DFT and perturb certain frequencies;
- 3. apply IDFT to reconstruct a portion of the original signal;
- 4. assign Y[time-window].
-
-This procedure is tackled by `signal_distortion()` for a single 1D-signal and by `dfaug()` for the whole dataframe. A normalization procedure is usually performed to apply the same distortion to every signal.
+This procedure is tackled by `signal_distortion()` for a single 1D-signal and by `dfaug()` for the whole dataframe.
 
 Some key points:
  - is some frequency more important than others? Is there an automatic way to decide it?
  - understanding fine tuning in Fourier/Wavelet decomposition
+ - is signal normalization useful? (it seems not from energy database)
