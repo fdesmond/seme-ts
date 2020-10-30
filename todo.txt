@@ -1,5 +1,4 @@
 ## TO DO
-- write email to max and sonia
-- julien: bejing test
+- julien: bejing test and "method" in report
 - yiye: implement new technique (sonia's idea + classification)
-- fabio: report (bibliography) and clean code
+- fabio: start report (bibliography) and clean code in notebooks

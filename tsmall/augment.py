@@ -9,24 +9,27 @@ def signal_distortion(signal, sigma=0.2, method='fourier2'):
     '''
     Parameters
     ----------
-    signal : 1D-ndarray
-    sigma : positive scalar accounting for the scale of the perturbation (0 iff no perturbation)
-    method : str, either *fourier1*, *fourier2* or *wavelet* accounting the type of transformation
+    signal : 1D-ndarray, input vector to distort
+    sigma : positive float64, scale of the perturbation (0 iff no perturbation)
+    method : str in *{fourier1, fourier2, wavelet}*, type of transformation/perturbation
 
     Returns
     -------
     signal_out : 1D-ndarray of the same size of input
 
-    DESCRIPTION TO ADD
+    Depending on the method, it performs a discrete fourier/wavelet transformation,
+    perturb it with IID gaussian variables and invert the transformation. The input is
+    perturbed with the perturbation magnitude tuned by the sigma parameter.
     '''
 
     # since we apply FFT to real signals, we force the length to be an even number
-    dim = len(signal)
+    dim = len(signal)   # remember the choice for later
     l = len(signal)
     if dim%2:
         signal_last = signal[-1]
         signal = signal[:-1]
         l = len(signal)
+
 
     # fourier transform on phase
     if method=='fourier1':
@@ -36,6 +39,7 @@ def signal_distortion(signal, sigma=0.2, method='fourier2'):
         #signal2 = irfft(ftb)   #inverse fourier transform
         ft_p = ft.real*np.cos(perturbation) - ft.imag*np.sin(perturbation) + 1j*(ft.imag*np.cos(perturbation) +ft.real*np.sin(perturbation))
         signal_out = irfft(ft_p)
+
     # fourier transform on amplitudes, the scale is divided by 10 with respect to the original one
     elif method=='fourier2':
         ft = rfft(signal)
@@ -43,11 +47,14 @@ def signal_distortion(signal, sigma=0.2, method='fourier2'):
                                     np.exp(np.random.normal(scale = sigma, size = l//4)))
         ft_p = ft*scale_perturbation
         signal_out = np.fft.irfft(ft_p)
+
+    # wavelet transform on the first component only
     elif method=='wavelet':
         cA, cD = pywt.dwt(signal, 'db2')     # decomposition
         perturbed_cA = cA + np.random.normal(0, sigma, size=len(cA)) # quasi-local perturbations
         perturbed_cD = cD + np.random.normal(0, 0, size=len(cD)) # small local perturbations
         signal_out = pywt.idwt(perturbed_cA, perturbed_cD, 'db2')
+
 
     # restore the original size of the vector
     if dim%2:
@@ -61,18 +68,21 @@ def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
     '''
     Parameters
     ----------
-    X : pandas df of size (n, d), the first d-1 columns represent the 1d-signal to be disturbed (see y_dist for last column)
-    sigma : positive float64, it tunes the distortion (0 iff no distortion)
+    X : pd.DataFrame of size (n, d), the first d-1 columns represent the 1d-signal to be disturbed
+        (see y_dist for last column)
+    sigma : positive float64, it tunes the distortion in signal_distortion() (0 iff no distortion)
     frac_features : float64 in [0,1], fraction of features to perturb for each time window
-    method : str, *fourier1* for phase, *fourier2* for amplitude, *wavelet* for wavelet
+    method : str in {*fourier1* for phase, *fourier2* for amplitude, *wavelet* for wavelet},
+             see signal_distortion()
     y_dist : boolean value, True for changing the last column in X
 
     Returns
     -------
-    X_dist pandas df consisting of a distorted version of X
+    X_dist : pandas df consisting of a distorted version of X
 
-    DESCRIPTION TO ADD
-    # pd.concat([X, X_dist], axis=0)
+    The output is a shuffled copy of the input where random time windows of some (random) features are
+    perturbed by means of signal_distortion(). To concatenate the output to the original DataFrame
+    just run: pd.concat([X, X_dist], axis=0)
     '''
     n, d = X.shape
     col = X.columns     # save column names for later

@@ -1,10 +1,20 @@
-# sampling and normalizing
+# sampling and normalization
 import numpy as np
 
-def block_sampling(N, k, l):
-    '''select k distinct intervals of size l from 0 to N
 
-    return: a boolean series of length N.
+def block_sampling(N, k, l):
+    '''
+    Parameters
+    ----------
+    N : int64, total length of the output vector
+    k : int64, number of blocks to select
+    l : int64, block length
+
+    Returns
+    -------
+    Boolean series of length N
+
+    Select k distinct intervals of size l from 0 to N
     '''
     seq = list(range(N))
     indices = range(N - (l - 1) * k)
@@ -19,8 +29,14 @@ def block_sampling(N, k, l):
 
 def min_max_normalization(X):
     '''
-    input: a pandas series
+    Parameters
+    ----------
+    X : 1-dim numpy array
 
-    return: min max transformation of the time-series
+    Returns
+    -------
+    min-max transformation of the input
+
+    Classical min-max scaling function.
     '''
     return (X - X.min())/(X.max() - X.min())
