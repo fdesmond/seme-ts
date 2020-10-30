@@ -57,20 +57,22 @@ def signal_distortion(signal, sigma=0.2, method='fourier2'):
 
 
 # dataframe augmentation
-def dfaug(X, sigma=0.2, method='fourier2', y_dist=False):
+def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
     '''
     Parameters
     ----------
-    X : 2d-ndarray of size (n, d), the first d-1 columns represent the 1d-signal to be disturbed (see y_dist for last column)
+    X : pandas df of size (n, d), the first d-1 columns represent the 1d-signal to be disturbed (see y_dist for last column)
     sigma : positive float64, it tunes the distortion (0 iff no distortion)
+    frac_features : float64 in [0,1], fraction of features to perturb for each time window
     method : str, *fourier1* for phase, *fourier2* for amplitude, *wavelet* for wavelet
     y_dist : boolean value, True for changing the last column in X
 
     Returns
     -------
-    2d-ndarray consisting of X concatenated with a distorted version of it, shape (2*n, d)
+    X_dist pandas df consisting of a distorted version of X
 
     DESCRIPTION TO ADD
+    # pd.concat([X, X_dist], axis=0)
     '''
     n, d = X.shape
     col = X.columns     # save column names for later
@@ -84,10 +86,10 @@ def dfaug(X, sigma=0.2, method='fourier2', y_dist=False):
 
     # applying distortion to each time-block and for some random features
     for i in [t_int*t for t in range(5)]:
-        for j in np.random.choice(range(d-1), int(np.sqrt(d)), replace=False):     # select sqrt(d) different features at random
+        for j in np.random.choice(range(d-1), int(d*frac_features), replace=False):     # select sqrt(d) different features at random
             X_dist[i:i+t_int, j] = signal_distortion(X_dist[i:i+t_int, j], sigma=sigma, method=method)
             if y_dist: X_dist[i:i+t_int, -1] = signal_distortion(X_dist[i:i+t_int, -1], sigma=sigma, method=method)
 
     # back to dataframe
     X_dist = pd.DataFrame(X_dist, columns=col)
-    return pd.concat([X, X_dist], axis=0)
+    return X_dist
