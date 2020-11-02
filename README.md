@@ -1,11 +1,11 @@
 # seme-tsmall
 
 ## Defining the problem
-We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d`,  each feature corresponding to a 1D-signal  (e.g. a time-series), and `n` observations. Each observation is the value at a certain time `t_i` of the `d` signals, i.e. the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`. We are interested in predicting the variable `Y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`.
+We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d`,  each feature corresponding to a 1D-signal  (e.g. a time-series), and `n` observations. Each observation is the value at a certain time `t_i` of the `d` signals, i.e. the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`. We are interested in predicting the variable `y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`.
 
 Suppose that `n` is small (**small-data problem**). We try to answer the following questions:
 
-*Does the time-series nature of the problem gives us more information on the prediction of the variable `Y`?*
+*Does the time-series nature of the problem gives us more information on the prediction of the variable `y`?*
 
 *Is it possible to use the datetime attribute to infer new synthetic observations and augment the dataset size? Is this helping reducing overfitting?*
 
@@ -118,7 +118,7 @@ For very general 1D-signals, we try the following procedure:
  1. select a random time-window of the signal;
  2. apply discrete transform such as FFT or WDF and perturb certain frequencies;
  3. apply inverse transform to reconstruct a portion of the original signal;
- 4. assign Y[time-window].
+ 4. assign y[time-window].
 
 This procedure is tackled by `signal_distortion()` for a single 1D-signal and by `dfaug()` for the whole dataframe.
 
