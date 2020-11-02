@@ -1,4 +1,9 @@
 ## TO DO
-- julien: bejing test and "method" in report
-- yiye: implement new technique (sonia's idea + classification)
-- fabio: start report (bibliography) and clean code in notebooks
+- julien: test bejing dataset +  section "method" in report
+- yiye: prepare notebook for Sonia + work on presentation
+- fabio: start presentation + report
+
+
+To discuss:
+- implement categorical data augmentation in augment.py
+- data-augmentation better improving in the case of classification problem

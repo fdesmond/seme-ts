@@ -4,6 +4,7 @@ from numpy.fft import rfft, irfft       # fourier transform and inverse function
 import pandas as pd
 import pywt
 
+
 # 1D signal distortion through Fourier or Wavelet Transform
 def signal_distortion(signal, sigma=0.2, method='fourier2'):
     '''
@@ -103,3 +104,62 @@ def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
     # back to dataframe
     X_dist = pd.DataFrame(X_dist, columns=col)
     return X_dist
+
+
+# multiple augmentation using dfaug and the three different methods
+def mdfaug(X, n_true, n_f1, n_f2, n_w, \
+           sigma_list_f1 = None, ff_list_f1 = None, \
+           sigma_list_f2 = None, ff_list_f2 = None, \
+           sigma_list_w = None, ff_list_w = None):
+    ''' Mixed Distortion:
+        Parameters
+        ----------
+        X : true dataframe
+        n_true : copies of X to include in the output
+        n_f1 : numbers of distorted copies from fourier1 to include in the output
+        n_f2 : numbers of distorted copies from fourier2 to include in the output
+        n_w : numbers of distorted copies from wavelet to include in the output
+
+        sigma_list_f1, ff_list_f1 : list (length n_f1), parameter for fourier distortion, if not given randomly select from [0, 1]
+        sigma_list_f2, ff_list_f2 : list (length n_f2), parameter for fourier2 distortion, if not given randomly select from [0, 1]
+        sigma_list_w, ff_list_w : list (length n_w), parameter for wavelet distortion, if not given randomly select from [0, 1]
+
+        Return
+        ----------
+        X_aug : dataframe composed of n_true copies of X and n_f1 + n_f2 + n_w distorted copies with dfaug.
+    '''
+
+    # check length of lists with n_f1, n_f2 and n_w
+    #
+    if sigma_list_f1 is not None: assert len(sigma_list_f1) == n_f1
+    else: sigma_list_f1 = np.random.uniform(size = n_f1)
+    if ff_list_f1 is not None: assert len(ff_list_f1) == n_f1
+    else: ff_list_f1 = np.random.uniform(size = n_f1)
+
+    #
+    if sigma_list_f2 is not None: assert len(sigma_list_f2) == n_f2
+    else: sigma_list_f2 = np.random.uniform(size = n_f2)
+    if ff_list_f2 is not None: assert len(ff_list_f2) == n_f2
+    else: ff_list_f2 = np.random.uniform(size = n_f2)
+
+    #
+    if sigma_list_w is not None: assert len(sigma_list_w) == n_w
+    else: sigma_list_w = np.random.uniform(size = n_w)
+    if ff_list_w is not None: assert len(ff_list_w) == n_w
+    else: ff_list_w = np.random.uniform(size = n_w)
+
+
+    # initialize output with n_true copies of X
+    X_aug = pd.concat([X]*n_true)
+
+
+    # append distorted copies of X through dfaug()
+    for k in range(n_f1):
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f1[k], frac_features=ff_list_f1[k], method='fourier1'))
+    for k in range(n_f2):
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f2[k], frac_features=ff_list_f2[k], method='fourier2'))
+    for k in range(n_w):
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_w[k], frac_features=ff_list_w[k], method='wavelet'))
+
+
+    return X_aug

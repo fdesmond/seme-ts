@@ -28,26 +28,23 @@ We focus on these open repositories available at UCI:
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
 Here a list of the notebooks present in the repository:
-- `aug_test.ipynb` : test the data augmentation for energy dataset, it perform the comparison using xgboost/randomForest
-- `aug_test_linear.ipynb` : same as above with linearRegression
-- `oracle.ipynb` : first implementation of tsmall with the energy dataset (to be deprecated)
+- `aug_knn.ipynb` : test the data augmentation for energy dataset using knn algorithm
 - `signal_distortion.ipynb` : contains information about fourier and wavelet discrete transform, it uses the submodule `tsmall.augment`.
 
 
 Architecture of `tsmall` module:
 ```
 tsmall/
-    augment.py          # contain signal_distortion and dfaug
+    augment.py          # contain signal_distortion, dfaug and mdfaug
     preprocessing.py    # contain block_sampling and min_max_normalization
 ```
 
 #### dependencies
-You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib`, `scikit-learn` and `xgboost`.
+You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib` and `scikit-learn`.
 
 ### last updates
- - added `aug_test.ipynb` with `xgboost` and `np.log(y)`
- - implement different methods for transformation (fourier and wavelet) in `augment.py`
- - added support to modify the `y` in `dfaug(y_dist=True)`
+ - added `aug_knn.ipynb`
+ - added `mdfaug()` in `augment.py`
  - added a very first version of the notebook `signal_distortion.ipynb`
  - old scripts moved to `old` folder
 
@@ -55,20 +52,20 @@ You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `
  - [x] check mathematical bibliography and python libraries on 1d-signal Data Augmentation
  - [x] discuss train/test split in `data_A` as well as the possible subsampling techniques to obtain `data_B`. Implement the sampling strategies in `preprocessing.py`
  - [x] discuss augmentation techniques to obtain `data_C`, the assumptions on the underlying signal (continuity? quasi-stationarity?). Implement techniques in  `augment.py`
- - [x] create the basic notebook `oracle.py` with baseline routine
- - [x] test the augmented dataframe in `aug_test.ipynb` with different score metrics, models (RF, xgboost, linearRegression)
+ - [x] test data augmentation for knn in `aug_knn.ipynb` with different score metrics and plot the results
  - [x] add docstrings useful comments in all python scripts
+ - [ ] test linearRegression
  - [ ] test PM2.5 dataframe
- - [ ] try energy dataset with classification, is this improving the result?
  - [ ] add assertion errors to python code
- - [ ] implement Sonia's idea with classification
+ - [ ] clean `signal_distortion.py`
  - [ ] start writing report
  - [ ] start writing presentation
+ - [ ] complete to-do list in `todo.txt`
 
 #### far in the future
  We also would like to include:
   - mathematical modelization and precise hypothesis on the model for which the procedure should give good results
-  - does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation? (see proposition by Sonia)
+  - does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation?
 
 
 ## Documentation
