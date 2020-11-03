@@ -99,7 +99,7 @@ def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
     for i in [t_int*t for t in range(5)]:
         for j in np.random.choice(range(d-1), int(d*frac_features), replace=False):     # select sqrt(d) different features at random
             X_dist[i:i+t_int, j] = signal_distortion(X_dist[i:i+t_int, j], sigma=sigma, method=method)
-            if y_dist: X_dist[i:i+t_int, -1] = signal_distortion(X_dist[i:i+t_int, -1], sigma=sigma, method=method)
+            if y_dist: X_dist[i:i+t_int, -1] = signal_distortion(X_dist[i:i+t_int, -1], sigma=sigma*0.5, method=method)
 
     # back to dataframe
     X_dist = pd.DataFrame(X_dist, columns=col)
@@ -110,7 +110,8 @@ def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
 def mdfaug(X, n_true, n_f1, n_f2, n_w, \
            sigma_list_f1 = None, ff_list_f1 = None, \
            sigma_list_f2 = None, ff_list_f2 = None, \
-           sigma_list_w = None, ff_list_w = None):
+           sigma_list_w = None, ff_list_w = None, \
+           y_dist=False):
     ''' Mixed Distortion:
         Parameters
         ----------
@@ -123,6 +124,8 @@ def mdfaug(X, n_true, n_f1, n_f2, n_w, \
         sigma_list_f1, ff_list_f1 : list (length n_f1), parameter for fourier distortion, if not given randomly select from [0, 1]
         sigma_list_f2, ff_list_f2 : list (length n_f2), parameter for fourier2 distortion, if not given randomly select from [0, 1]
         sigma_list_w, ff_list_w : list (length n_w), parameter for wavelet distortion, if not given randomly select from [0, 1]
+
+        y_dist : boolean value, True for changing the last column in X. Refer to dfaug()
 
         Return
         ----------
@@ -155,11 +158,11 @@ def mdfaug(X, n_true, n_f1, n_f2, n_w, \
 
     # append distorted copies of X through dfaug()
     for k in range(n_f1):
-        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f1[k], frac_features=ff_list_f1[k], method='fourier1'))
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f1[k], frac_features=ff_list_f1[k], method='fourier1', y_dist=y_dist))
     for k in range(n_f2):
-        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f2[k], frac_features=ff_list_f2[k], method='fourier2'))
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_f2[k], frac_features=ff_list_f2[k], method='fourier2', y_dist=y_dist))
     for k in range(n_w):
-        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_w[k], frac_features=ff_list_w[k], method='wavelet'))
+        X_aug = X_aug.append(dfaug(X, sigma=sigma_list_w[k], frac_features=ff_list_w[k], method='wavelet', y_dist=y_dist))
 
 
     return X_aug
