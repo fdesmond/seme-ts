@@ -1,21 +1,26 @@
 # seme-tsmall
+Work done in [Institut de Mathématiques de Bordeaux](https://www.math.u-bordeaux.fr/imb/spip.php) organized by [AMIES](https://www.agence-maths-entreprises.fr/public/pages/index.html) and in collaboration with [FieldBox.ai](https://www.fieldbox.ai/). Link to the event: http://seme-bordeaux.sciencesconf.org/
 
 ## Defining the problem
-We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d` and `n` observations.  Each feature corresponds to a 1D-signal  (e.g. a time-series), i.e., the i-th observation is the value at a certain time `t_i` of the `d` signals. In other words, the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`. We are interested in predicting the variable `y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`.
+We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d` and `n` observations.  Each feature corresponds to a 1D-signal  (e.g. a time-series): the i-th observation is the value at a certain time `t_i` of the `d` signals.
 
-In particular, we suppose that `y = f(X_1, ..., X_d)`. Note that we do not suppose `y` to be an explicit function of the time.
+Thus, the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`.
+
+We are interested in predicting the variable `y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`. Namely, we suppose that `y = f(X_1, ..., X_d)`. Note that we do not suppose `y` to be an explicit function of the time.
 
 Suppose that `n` is small (**small-data problem**). We try to answer the following questions:
 
 *Does the time-signal nature of the features gives us more information than the sole observations `X_j(t_i)`?*
 
-*Is it possible to infer new synthetic observations and augment the dataset size? Is this helping in predicting `y` (e.g., reducing overfitting)?*
+*Is it possible to infer new data and augment the dataset size? Is this helping in predicting `y` (e.g., reducing overfitting)?*
+
+
 
 ### experimental method
 For the sake of analysis, we consider a dataframe `data_A` with `N` observations where `N>>n`. It is split in `train_A` and `test_A`. We mainly focus on classical (uniform) random sampling and on random block sampling (random blocks of consecutive observations), depending on the dataset.
 
 #### sampling procedure
-Through a **sampling procedure** on `train_A`, we derive a smaller dataframe called `train_B`; similarly we obtain `test_B` from `test_A`. The two dataframes `train_B` and `test_B` from `data_B`: the small dataframe with `n` observations. Again the sampling procedure can be performed in different ways, we refer to the the following subsections.
+Through a **sampling procedure** on `train_A`, we derive a smaller dataframe called `train_B`; similarly we obtain `test_B` from `test_A`. The two dataframes `train_B` and `test_B` form `data_B`: the small dataframe with `n` observations. We refer to the Documentation section for the sampling procedure.
 
 #### data augmentation
 From `train_B`, we perform **data augmentation** to dispose of a larger number of observations and obtain a bigger dataframe called `data_C`, the dimension of `data_C` is up to 8 times the one of `train_B`. The **synthetic features** and labels are inferred using different techniques, we refer to the data augmnetation section.
@@ -26,7 +31,7 @@ A same machine-learning algorithm is then trained on the different `train_X` spl
 ### dataset examples
 We focus on these open repositories available at UCI:
  - [Appliances energy prediction Data Set](https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction)
- - [Beijing PM2.5 Data Data Set](https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data)
+ - [Beijing PM2.5 Data Data Set](https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data) (to add)
 
 
 ## Current module version
@@ -71,7 +76,7 @@ You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `
 
 #### far in the future
  We also would like to include:
-  - mathematical modelization and precise hypothesis on the model for which the procedure should give good results
+  - Which hypothesis on the model for which the procedure should give good results?
   - does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation?
 
 
