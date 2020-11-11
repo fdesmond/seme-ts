@@ -1,5 +1,7 @@
 # seme-tsmall
-Work done in [Institut de Mathématiques de Bordeaux](https://www.math.u-bordeaux.fr/imb/spip.php) organized by [AMIES](https://www.agence-maths-entreprises.fr/public/pages/index.html) and in collaboration with [FieldBox.ai](https://www.fieldbox.ai/). Link to the event: http://seme-bordeaux.sciencesconf.org/
+Work done in [Institut de Mathématiques de Bordeaux](https://www.math.u-bordeaux.fr/imb/spip.php) organized by [AMIES](https://www.agence-maths-entreprises.fr/public/pages/index.html) and in collaboration with [FieldBox.ai](https://www.fieldbox.ai/).
+
+Link to the event: http://seme-bordeaux.sciencesconf.org/
 
 ## Defining the problem
 We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d` and `n` observations.  Each feature corresponds to a 1D-signal  (e.g. a time-series): the i-th observation is the value at a certain time `t_i` of the `d` signals.
@@ -77,7 +79,7 @@ You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `
 #### far in the future
  We also would like to include:
   - Which hypothesis on the model for which the procedure should give good results?
-  - does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation?
+  - Does it makes more sense to create synthetic features by combinations of the existing ones instead of perturbation?
 
 
 ## Documentation
