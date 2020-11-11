@@ -1,9 +1,11 @@
 ## TO DO
-- julien: test bejing dataset +  section "method" in report
-- yiye: prepare notebook for Sonia + work on presentation
-- fabio: start presentation + report
+- julien: test bejing dataset
+- yiye: ??
+- fabio: ??
 
 
 To discuss:
 - implement categorical data augmentation in augment.py
-- data-augmentation better improving in the case of classification problem
+- why the method is not performing well on decision trees?
+- understanding fine tuning in Fourier/Wavelet decomposition
+- is signal normalization useful? (it seems not from energy dataframe) It seems not to improve the results.

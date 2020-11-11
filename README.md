@@ -1,34 +1,40 @@
 # seme-tsmall
 
 ## Defining the problem
-We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d`,  each feature corresponding to a 1D-signal  (e.g. a time-series), and `n` observations. Each observation is the value at a certain time `t_i` of the `d` signals, i.e. the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`. We are interested in predicting the variable `y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`.
+We are given a regression problem with a dataframe consisting in `d` features `X_1, X_2, ..., X_d` and `n` observations.  Each feature corresponds to a 1D-signal  (e.g. a time-series), i.e., the i-th observation is the value at a certain time `t_i` of the `d` signals. In other words, the dataframe is a `n x d` matrix with coefficient `(i,j)` given by `X_j(t_i)` for `i=1,...,d` and `j=1,...,n`. We are interested in predicting the variable `y` which depends on the values of the 1D-signals `X_1, X_2, ..., X_d`.
+
+In particular, we suppose that `y = f(X_1, ..., X_d)`. Note that we do not suppose `y` to be an explicit function of the time.
 
 Suppose that `n` is small (**small-data problem**). We try to answer the following questions:
 
-*Does the time-series nature of the problem gives us more information on the prediction of the variable `y`?*
+*Does the time-signal nature of the features gives us more information than the sole observations `X_j(t_i)`?*
 
-*Is it possible to use the datetime attribute to infer new synthetic observations and augment the dataset size? Is this helping reducing overfitting?*
+*Is it possible to infer new synthetic observations and augment the dataset size? Is this helping in predicting `y` (e.g., reducing overfitting)?*
 
-### method
-For the sake of analysis, we consider a dataframe `data_A` with `N` observations where `N>>n`. It is split in `train_A` and `test_A`, this splitting being performed in different ways. We mainly focus on classical (uniform) random sampling and on random block sampling (random blocks of consecutive observations), depending on the dataset.
+### experimental method
+For the sake of analysis, we consider a dataframe `data_A` with `N` observations where `N>>n`. It is split in `train_A` and `test_A`. We mainly focus on classical (uniform) random sampling and on random block sampling (random blocks of consecutive observations), depending on the dataset.
 
-Through a **sampling procedure** on `train_A`, we derive a smaller dataframe with `n` observations called `data_B`. Again the sampling procedure can be performed in different ways, we refer to the the following subsections.
+#### sampling procedure
+Through a **sampling procedure** on `train_A`, we derive a smaller dataframe called `train_B`; similarly we obtain `test_B` from `test_A`. The two dataframes `train_B` and `test_B` from `data_B`: the small dataframe with `n` observations. Again the sampling procedure can be performed in different ways, we refer to the the following subsections.
 
-From `data_B`, we perform **data augmentation** to dispose of a larger number of observations and obtain a bigger dataframe called `data_C`, the dimension of `data_C` is usually 2, 3 or 4 times the one of `data_B`. The **synthetic features** and labels are inferred using different techniques, we refer to the data augmnetation section.
+#### data augmentation
+From `train_B`, we perform **data augmentation** to dispose of a larger number of observations and obtain a bigger dataframe called `data_C`, the dimension of `data_C` is up to 8 times the one of `train_B`. The **synthetic features** and labels are inferred using different techniques, we refer to the data augmnetation section.
 
-A same machine-learning algorithm is then trained on the different `train_X` splits, where `X = A, B` or `C`: this yields the three models `model_A`, `model_B` and `model_C`. We evaluate each model on (different subsets of) `test_A` and understand whether the imputation technique is improving the stability and/or the score of `model_C` with respect to `model_B`.
+#### evaluation with RMSE and R2 score
+A same machine-learning algorithm is then trained on the different `train_X` splits, where `X = A, B` or `C`: this yields the three models `model_A`, `model_B` and `model_C`. We evaluate each model on `test_A` (and `test_B`) to understand whether the imputation technique is improving the stability and/or the score of `model_C` with respect to `model_B`. The metrics under consideration are given by the (root) mean square error and the R2 score.
 
 ### dataset examples
 We focus on these open repositories available at UCI:
- - [Beijing PM2.5 Data Data Set](https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data)
  - [Appliances energy prediction Data Set](https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction)
+ - [Beijing PM2.5 Data Data Set](https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data)
 
 
 ## Current module version
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
 Here a list of the notebooks present in the repository:
-- `aug_knn.ipynb` : test the data augmentation for energy dataset using knn algorithm
+- `aug_knn.ipynb` : test the data augmentation for energy dataset using knn algorithm (original version)
+- `aug_knn_sstt.ipynb` : same as above but using `StandardScaler` (for a more correct scaling of the features) and `TransformedTargetRegressor` (to compute scores in the original scale).
 - `signal_distortion.ipynb` : contains information about fourier and wavelet discrete transform, it uses the submodule `tsmall.augment`.
 
 
@@ -43,7 +49,7 @@ tsmall/
 You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib` and `scikit-learn`.
 
 ### last updates
- - added `aug_knn.ipynb`
+ - added `aug_knn.ipynb` and `aug_knn_sstt.ipynb`
  - added `mdfaug()` in `augment.py`
  - added a very first version of the notebook `signal_distortion.ipynb`
  - old scripts moved to `old` folder
@@ -54,13 +60,14 @@ You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `
  - [x] discuss augmentation techniques to obtain `data_C`, the assumptions on the underlying signal (continuity? quasi-stationarity?). Implement techniques in  `augment.py`
  - [x] test data augmentation for knn in `aug_knn.ipynb` with different score metrics and plot the results
  - [x] add docstrings useful comments in all python scripts
- - [ ] test linearRegression
- - [ ] test PM2.5 dataframe
+ - [x] test linearRegression and decision trees (xgboost, adaboost, randomforest)
+ - [x] prepare presentation for AMIES
  - [ ] add assertion errors to python code
- - [ ] clean `signal_distortion.py`
- - [ ] start writing report
- - [ ] start writing presentation
- - [ ] complete to-do list in `todo.txt`
+ - [ ] test PM2.5 dataframe
+ - [ ] clean `signal_distortion.py` and test removing high frequencies
+ - [ ] to-do list in `todo.txt`
+ - [ ] write report for AMIES
+
 
 #### far in the future
  We also would like to include:
@@ -107,11 +114,13 @@ We tackle two possible subsampling techniques in order to obtain `data_B`:
 ### data augmentation
 Data augmentation is the process of generating artificial data in order to reduce the variance of the predictor and thus avoiding overfitting.
 
-Within our framework, we aim at exploiting the temporal order in the observations and to infer values by using interpolation techniques:
- - Under stationarity assumptions we can use classical bootstrap techniques (Max work?).
- - Under continuity assumptions of the signals, we can use interpolation techniques as in [10], although with not great performances.
+Within our framework, we can try to exploit the time-signal nature of the observations and to infer new values. Depending on the hypothesis one takes on `y`, different techniques are available:
+ - Under stationarity assumptions one can use classical bootstrap techniques or model-methods (ARIMA, ARCH, etc.).
+ - Under continuity assumptions of the signals, one can use interpolation techniques as in [10], (however this seems not to substantially improve the results).
  - Fourier/wavelet transform, see next subsection
- - good points aggregation and convex combination
+ - categorical data augmentation: group observations by `y`-labels + transformation in feature-space
+
+ Since we do not want to assume any additional hypothesis on `y`, we exclude the first two possibilities and focus on the last twos. It turns out that categorical data augmentation works pretty well with k-NN.
 
 #### Fourier and wavelet discrete transform
 For very general 1D-signals, we try the following procedure:
@@ -122,10 +131,5 @@ For very general 1D-signals, we try the following procedure:
 
 This procedure is tackled by `signal_distortion()` for a single 1D-signal and by `dfaug()` for the whole dataframe.
 
-Some key points:
- - is some frequency more important than others? Is there an automatic way to decide it?
- - understanding fine tuning in Fourier/Wavelet decomposition
- - is signal normalization useful? (it seems not from energy dataframe)
-
 #### aggregate and generate
-To add.
+Instead of grouping by time-windows (consecutive observations), we group by `y`-labels (e.g. select observations for which the corresponding `y`-label is in the same quantile interval). We then apply DFT/DWF and assign the original `y` values.
