@@ -31,17 +31,15 @@ From `train_B`, we perform **data augmentation** to dispose of a larger number o
 A same machine-learning algorithm is then trained on the different `train_X` splits, where `X = A, B` or `C`: this yields the three models `model_A`, `model_B` and `model_C`. We evaluate each model on `test_A` (and `test_B`) to understand whether the imputation technique is improving the stability and/or the score of `model_C` with respect to `model_B`. The metrics under consideration are given by the (root) mean square error and the R2 score.
 
 ### dataset examples
-We focus on these open repositories available at UCI:
- - [Appliances energy prediction Data Set](https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction)
- - [Beijing PM2.5 Data Data Set](https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data) (to add)
+We focus on the following open repository available at UCI: [Appliances energy prediction Data Set](https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction)
 
 
 ## Current module version
 To work with our functions, just download the `tsmall` directory and launch python in the same root directory of `tsmall`. It then suffices to type `from tsmall import *` to retrieve all the functionalities.
 
-Here a list of the notebooks present in the repository:
-- `aug_knn.ipynb` : test the data augmentation for energy dataset using knn algorithm (original version)
-- `aug_knn_sstt.ipynb` : same as above but using `StandardScaler` (for a more correct scaling of the features) and `TransformedTargetRegressor` (to compute scores in the original scale).
+Here a list of the relevant notebooks present in the repository:
+- `DL_aug.ipynb` : test the data augmentation for energy dataset using knn algorithm
+- `TS_aug.ipynb` : test data augmentation using LSTM-VAE
 - `signal_distortion.ipynb` : contains information about fourier and wavelet discrete transform, it uses the submodule `tsmall.augment`.
 
 
@@ -49,6 +47,7 @@ Architecture of `tsmall` module:
 ```
 tsmall/
     augment.py          # contain signal_distortion, dfaug and mdfaug
+    dl_method.py        # function for LSTM-VAE
     preprocessing.py    # contain block_sampling and min_max_normalization
 ```
 
@@ -56,6 +55,7 @@ tsmall/
 You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib` and `scikit-learn`.
 
 ### last updates
+ - clean a bit + `DL_aug.ipynb` and `TS_aug.ipynb` merged from deep-learning branch
  - added `aug_knn.ipynb` and `aug_knn_sstt.ipynb`
  - added `mdfaug()` in `augment.py`
  - added a very first version of the notebook `signal_distortion.ipynb`
