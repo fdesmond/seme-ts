@@ -1,66 +1,10 @@
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.compose import TransformedTargetRegressor
-from sklearn.metrics import mean_squared_error, r2_score
 
 from tsmall import mdfaug
-
-
-def repeat_augmentation_and_get_statistics(
-    xtrain_A_t,
-    ytrain_A,
-    xtest_A_t,
-    ytest_A,
-    sxtest_A_t,
-    p: float = 0.05,
-    n_tries: int = 50
-):
-    # initialize list of results
-    R2_B = np.zeros(shape=(n_tries, 2))
-    R2_C = np.zeros(shape=(n_tries, 2))
-    rmse_B = np.zeros(shape=(n_tries, 2))
-    rmse_C = np.zeros(shape=(n_tries, 2))
-
-    for k in range(n_tries):
-        # sample data_B
-        xtrain_B = xtrain_A_t.sample(frac=p, random_state=k)
-        ytrain_B = ytrain_A.loc[xtrain_B.index]
-        xtest_B = xtest_A_t.sample(frac=p, random_state=k)
-        ytest_B = ytest_A.loc[xtest_B.index]
-
-        train_C: pd.DataFrame = quantile_based_augmentation(
-            xtrain_B,
-            ytrain_B,
-            n_bins=9
-        )
-        ytrain_C = train_C[train_C.columns[-1]]
-        xtrain_C = train_C[train_C.columns[:-1]]
-
-        # scaling
-        ss_B = StandardScaler()
-        sxtrain_B = ss_B.fit_transform(xtrain_B)
-        sxtest_B = ss_B.transform(xtest_B)
-        ss_C = StandardScaler()
-        sxtrain_C = ss_C.fit_transform(xtrain_C)
-
-        # model fitting
-        model_B = run_knn(X_train=sxtrain_B, Y_train=ytrain_B)
-        model_C = run_knn(X_train=sxtrain_C, Y_train=ytrain_C)
-
-        # save performances
-        R2_B[k, 0] = r2_score(ytest_B, model_B.predict(sxtest_B))
-        rmse_B[k, 0] = mean_squared_error(ytest_B, model_B.predict(sxtest_B), squared=False)
-        R2_B[k, 1] = r2_score(ytest_A, model_B.predict(sxtest_A_t))
-        rmse_B[k, 1] = mean_squared_error(ytest_A, model_B.predict(sxtest_A_t), squared=False)
-        R2_C[k, 0] = r2_score(ytest_B, model_C.predict(sxtest_B))
-        rmse_C[k, 0] = mean_squared_error(ytest_B, model_C.predict(sxtest_B), squared=False)
-        R2_C[k, 1] = r2_score(ytest_A, model_C.predict(sxtest_A_t))
-        rmse_C[k, 1] = mean_squared_error(ytest_A, model_C.predict(sxtest_A_t), squared=False)
-
-        return R2_B, R2_C, rmse_B, rmse_C
 
 
 def quantile_based_augmentation(
@@ -98,11 +42,12 @@ def quantile_based_augmentation(
     return train_C
 
 
-# KNN with GridSearch and cv=3 + applying log transformation to target variable
 def run_knn(X_train, Y_train):
-    '''run KNN wit CV.
+    '''Run KNN with GridSearch(cv=3) and apply log transformation
+    to target variable.
 
-    return: trained model.
+    Returns:
+        - trained model
     '''
     params_knn = {'n_neighbors': list(np.arange(10, 30, 2))}
     knn = KNeighborsRegressor()
