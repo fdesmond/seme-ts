@@ -51,6 +51,7 @@ tsmall/
     augment.py          # contain signal_distortion, dfaug and mdfaug
     dl_method.py        # function for LSTM-VAE
     preprocessing.py    # contain block_sampling and min_max_normalization
+utils.py                # useful function to lighten notebooks
 ```
 
 #### dependencies
@@ -59,6 +60,7 @@ You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `
 If you have `pipenv` installed, the environment is set in the `Pipfile`. You can load it by simply executing `pipenv install` inside the git repository.
 
 ### last updates
+ - added `utils.py` with useful functions for notebook
  - pipenv environment, code cleaning and refactoring with hint typing
  - clean a bit + `DL_aug.ipynb` and `TS_aug.ipynb` merged from deep-learning branch
  - added `aug_knn.ipynb` and `aug_knn_sstt.ipynb`
