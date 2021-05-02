@@ -1,12 +1,19 @@
-# this script contains the core of data augmentation part
 import numpy as np
-from numpy.fft import rfft, irfft       # fourier transform and inverse function
+from numpy.fft import rfft, irfft
 import pandas as pd
 import pywt
 
+DISTORT_COEFFICIENT = 0.2
+DISTORT_METHOD = 'fourier2'
+FRACTION_OF_DISTORTED_FEATURES = 0.5
+
 
 # 1D signal distortion through Fourier or Wavelet Transform
-def signal_distortion(signal, sigma=0.2, method='fourier2'):
+def signal_distortion(
+    signal: np.ndarray,
+    sigma: float = DISTORT_COEFFICIENT,
+    method: str = DISTORT_METHOD
+) -> np.ndarray:
     '''
     Parameters
     ----------
@@ -16,56 +23,66 @@ def signal_distortion(signal, sigma=0.2, method='fourier2'):
 
     Returns
     -------
-    signal_out : 1D-ndarray of the same size of input
+    transformed_signal : 1D-ndarray of the same size of input
 
     Depending on the method, it performs a discrete fourier/wavelet transformation,
     perturb it with IID gaussian variables and invert the transformation. The input is
     perturbed with the perturbation magnitude tuned by the sigma parameter.
     '''
 
-    # since we apply FFT to real signals, we force the length to be an even number
-    dim = len(signal)   # remember the choice for later
-    l = len(signal)
-    if dim%2:
+    # FFT to real signals, we force the length to be an even number
+    signal_length = len(signal)
+    signal_length_is_odd = signal_length % 2
+    if signal_length_is_odd:
         signal_last = signal[-1]
         signal = signal[:-1]
-        l = len(signal)
+        signal_length = len(signal)
 
+    if method not in {'fourier1', 'fourier2', 'wavelet'}:
+        raise TypeError("Method must be 'fourier1', 'fourier2' or 'wavelet'.")
 
     # fourier transform on phase
-    if method=='fourier1':
+    if method == 'fourier1':
         ft = rfft(signal)
-        perturbation = np.random.normal(0, sigma, size=l//2+1)
-        #ftb = ft + perturbation   #noise applied on fourier transform
-        #signal2 = irfft(ftb)   #inverse fourier transform
-        ft_p = ft.real*np.cos(perturbation) - ft.imag*np.sin(perturbation) + 1j*(ft.imag*np.cos(perturbation) +ft.real*np.sin(perturbation))
-        signal_out = irfft(ft_p)
+        perturbation = np.random.normal(0, sigma, size=signal_length//2+1)
+        # ftb = ft + perturbation   # noise applied on fourier transform
+        # signal2 = irfft(ftb)   # inverse fourier transform
+        ft_p = ft.real*np.cos(perturbation) - ft.imag*np.sin(perturbation) +\
+            1j * (ft.imag*np.cos(perturbation) + ft.real*np.sin(perturbation))
+        transformed_signal = irfft(ft_p)
 
-    # fourier transform on amplitudes, the scale is divided by 10 with respect to the original one
-    elif method=='fourier2':
+    # fourier transform on amplitudes
+    if method == 'fourier2':
         ft = rfft(signal)
-        scale_perturbation = np.append(np.ones(l//2+1 - l//4), \
-                                    np.exp(np.random.normal(scale = sigma, size = l//4)))
+        scale_perturbation = np.append(
+            np.ones(signal_length//2+1 - signal_length//4),
+            np.exp(np.random.normal(scale=sigma, size=signal_length//4))
+        )
         ft_p = ft*scale_perturbation
-        signal_out = np.fft.irfft(ft_p)
+        transformed_signal = irfft(ft_p)
 
     # wavelet transform on the first component only
-    elif method=='wavelet':
+    if method == 'wavelet':
         cA, cD = pywt.dwt(signal, 'db2')     # decomposition
-        perturbed_cA = cA + np.random.normal(0, sigma, size=len(cA)) # quasi-local perturbations
-        perturbed_cD = cD + np.random.normal(0, 0, size=len(cD)) # small local perturbations
-        signal_out = pywt.idwt(perturbed_cA, perturbed_cD, 'db2')
-
+        perturbed_cA = cA + np.random.normal(0, sigma, size=len(cA))
+        perturbed_cD = cD + np.random.normal(0, 0, size=len(cD))
+        transformed_signal = pywt.idwt(perturbed_cA, perturbed_cD, 'db2')
 
     # restore the original size of the vector
-    if dim%2:
-        signal_out = np.append(signal_out, signal_last)
+    if signal_length_is_odd:
+        transformed_signal = np.append(transformed_signal, signal_last)
 
-    return signal_out
+    return transformed_signal
 
 
 # dataframe augmentation
-def dfaug(X, sigma=0.2, frac_features=0.5, method='fourier2', y_dist=False):
+def dfaug(
+    X: pd.DataFrame,
+    sigma: float = DISTORT_COEFFICIENT,
+    frac_features: float = FRACTION_OF_DISTORTED_FEATURES,
+    method: str = DISTORT_METHOD,
+    y_dist: bool = False
+) -> pd.DataFrame:
     '''
     Parameters
     ----------

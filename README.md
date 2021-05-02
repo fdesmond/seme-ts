@@ -1,6 +1,8 @@
 # seme-tsmall
 Work done in [Institut de Mathématiques de Bordeaux](https://www.math.u-bordeaux.fr/imb/spip.php) organized by [AMIES](https://www.agence-maths-entreprises.fr/public/pages/index.html) and in collaboration with [FieldBox.ai](https://www.fieldbox.ai/).
 
+The report can be found on Hal Archives: https://hal.archives-ouvertes.fr/hal-03211100
+
 Link to the event: http://seme-bordeaux.sciencesconf.org/
 
 ## Defining the problem
@@ -52,9 +54,12 @@ tsmall/
 ```
 
 #### dependencies
-You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib` and `scikit-learn`.
+You need to pre-install `numpy`, `pandas` and `pywt` (wavelet pkg) for running `tsmall`. The notebooks require `matplotlib` and `scikit-learn`. If you want to test DL methods, you need `keras` and `tensorflow < 2`.
+
+If you have `pipenv` installed, the environment is set in the `Pipfile`. You can load it by simply executing `pipenv install` inside the git repository.
 
 ### last updates
+ - pipenv environment, code cleaning and refactoring with hint typing
  - clean a bit + `DL_aug.ipynb` and `TS_aug.ipynb` merged from deep-learning branch
  - added `aug_knn.ipynb` and `aug_knn_sstt.ipynb`
  - added `mdfaug()` in `augment.py`
